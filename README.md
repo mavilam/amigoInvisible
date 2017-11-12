@@ -1,6 +1,6 @@
 # [ESPAÑOL] Amigo Invisible
 
-## Versión 0.1
+## Versión 0.2
 
 ### Descripción
 
@@ -35,7 +35,7 @@
 
 # [ENGLISH] Secret Santa
 
-## 0.1 Version
+## 0.2 Version
 
 ### Description
 

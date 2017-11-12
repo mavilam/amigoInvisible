@@ -10,8 +10,8 @@ class Player(object):
     mail = ""
     msg = ""
 
-    def print_player():
-        print name + ": " + email
+    def to_string(self):
+        return self.name + ": " + self.mail
     # The class "constructor" - It's actually an initializer
     def __init__(self, name, mail):
         self.name = name
@@ -21,6 +21,9 @@ class Pairplayer(object):
     playerfrom = Player("","")
     playerto = Player("","")
 
+    def to_string(self):
+        return "From: " + self.playerfrom.to_string() + " to: " + self.playerto.to_string()
+
     # The class "constructor" - It's actually an initializer
     def __init__(self, playerfrom, playerto):
         self.playerfrom = playerfrom
@@ -29,27 +32,30 @@ class Pairplayer(object):
 dictionary_from = {}
 dictionary_to = {}
 text = ""
+subject = "Amigo invisible 2017"
 
 def fill_dictionary(arg):
-    wo_back_slash = arg[:-1]
-    friend_list =  wo_back_slash.split(':', 1)
+    global dictionary_from
+    wo_new_line = arg[:-1]
+    friend_list =  wo_new_line.split(':', 1)
     dictionary_from[friend_list[0]] = friend_list[1]
 
 def read_list(name):
     f = open(name, 'rw')
-
+    print "Reading list"
     for line in f:
             fill_dictionary(line)
 
     global dictionary_to
     dictionary_to = dictionary_from.copy()
-    mix_names()
+    print "List readed"
 
 def mix_names():
+    print "Mixing names"
     length = len(dictionary_from)
     i = 0
     time = 0
-    listPlayers = []
+    list_players = []
     while i < length :
 
         namefrom = random.choice(dictionary_from.keys())
@@ -63,39 +69,43 @@ def mix_names():
         if mailto != mailfrom:
             del dictionary_to[nameto]
             del dictionary_from[namefrom]
-            newPlayer = Pairplayer(playerfrom,playerto)
-            listPlayers.append(newPlayer)
+            new_player = Pairplayer(playerfrom,playerto)
+            list_players.append(new_player)
             i= i+1
         time = time+1
         if time == (length*3):
             print "Error, you have to repeat the process. A person has been matched with himself/herself"
             sys.exit()
 
-    send_mail(listPlayers)
-
-
+    print "Names mixed"
+    return list_players
 
 
 def send_mail(players):
-    i = 0
+    i = 1
+    print "Sending mails"
     for value in players:
         value.playerfrom.msg = text.replace('[namefrom]',value.playerfrom.name).replace('[nameto]',value.playerto.name)
-        username = 'mailtouse@blah.com'
-        password = 'psw'
+        username = 'manoinocenteavila@gmail.com'
+        password = 'manoinocente'
         server = smtplib.SMTP('smtp.gmail.com:587')
         server.starttls()
         server.ehlo()
         server.login(username,password)
-        server.sendmail(username, value.playerfrom.mail , value.playerfrom.msg)
+        #Add the Subject
+        message ='Subject: {}\n\n{}'.format(subject, value.playerfrom.msg)
+        server.sendmail(username, value.playerfrom.mail , message)
         server.quit()
-        i+=i+1
-        print i
-
+        print "The " + str(i) + " mail has been sent"
+        i = i+1
+    print "All mails have been sent"
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
         f = open(str(sys.argv[2]), 'rw')
         text = f.read();
         read_list(str(sys.argv[1]))
+        list_players = mix_names()
+        send_mail(list_players)
     else:
         print "Script not properly executed: amigo.py [list_path] [text]"

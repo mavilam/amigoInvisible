@@ -1,4 +1,4 @@
-#[ESPAÑOL] Amigo Invisible
+# [ESPAÑOL] Amigo Invisible
 
 ## Versión 0.1
 
@@ -21,7 +21,7 @@
 	Antonio:antonio@blah.com
 	Marta:mrt@blah.com
 	Sara:sara@blah.com
-```
+    ```
 * El fichero de entrada con el mensaje llevará la etiqueta *[namefrom]* donde se quiera poner el nombre de la persona a la que le llegará el correo y *[nameto]* donde se quiera poner el nombre de la persona a la que se tiene que regalar:
   ```
   Hola [namefrom] !
@@ -60,7 +60,7 @@ Basic script that will make the secret santa draw. Given two files by input, one
 * The second file, has the message that will be sent to every participant. The tag [namefrom] will be replaced with the recipent of the mail. [nameto] will be replaced with the name of the person to be gifted:
     ```
     Hi [namefrom] !
-   
+
     You has to give the present to [nameto]
     ```
 * The script execution:

@@ -1,9 +1,9 @@
 #!/usr/bin/python
-# Import smtplib for the actual sending function
 
 import smtplib
 import random
 import sys
+
 
 class Player(object):
     name = ""
@@ -12,14 +12,16 @@ class Player(object):
 
     def to_string(self):
         return self.name + ": " + self.mail
+
     # The class "constructor" - It's actually an initializer
     def __init__(self, name, mail):
         self.name = name
         self.mail = mail
 
+
 class Pairplayer(object):
-    playerfrom = Player("","")
-    playerto = Player("","")
+    playerfrom = Player("", "")
+    playerto = Player("", "")
 
     def to_string(self):
         return "From: " + self.playerfrom.to_string() + " to: " + self.playerto.to_string()
@@ -29,26 +31,32 @@ class Pairplayer(object):
         self.playerfrom = playerfrom
         self.playerto = playerto
 
+
 dictionary_from = {}
 dictionary_to = {}
 text = ""
-subject = "Amigo invisible 2017"
+subject = "Amigo invisible 2018"
+username = "manoinocenteavila@gmail.com"
+password = "password"
+
 
 def fill_dictionary(arg):
     global dictionary_from
     wo_new_line = arg[:-1]
-    friend_list =  wo_new_line.split(':', 1)
+    friend_list = wo_new_line.split(':', 1)
     dictionary_from[friend_list[0]] = friend_list[1]
 
+
 def read_list(name):
-    f = open(name, 'rw')
+    file = open(name, 'rw')
     print "Reading list"
-    for line in f:
-            fill_dictionary(line)
+    for line in file:
+        fill_dictionary(line)
 
     global dictionary_to
     dictionary_to = dictionary_from.copy()
     print "List readed"
+
 
 def mix_names():
     print "Mixing names"
@@ -56,24 +64,23 @@ def mix_names():
     i = 0
     time = 0
     list_players = []
-    while i < length :
-
+    while i < length:
         namefrom = random.choice(dictionary_from.keys())
         mailfrom = dictionary_from[namefrom]
-        playerfrom = Player(namefrom,mailfrom)
+        playerfrom = Player(namefrom, mailfrom)
 
         nameto = random.choice(dictionary_to.keys())
         mailto = dictionary_to[nameto]
-        playerto = Player(nameto,mailto)
+        playerto = Player(nameto, mailto)
 
         if mailto != mailfrom:
             del dictionary_to[nameto]
             del dictionary_from[namefrom]
-            new_player = Pairplayer(playerfrom,playerto)
+            new_player = Pairplayer(playerfrom, playerto)
             list_players.append(new_player)
-            i= i+1
-        time = time+1
-        if time == (length*3):
+            i = i + 1
+        time = time + 1
+        if time == (length * 3):
             print "Error, you have to repeat the process. A person has been matched with himself/herself"
             sys.exit()
 
@@ -82,23 +89,28 @@ def mix_names():
 
 
 def send_mail(players):
+    server = create_server_connection()
     i = 1
     print "Sending mails"
     for value in players:
-        value.playerfrom.msg = text.replace('[namefrom]',value.playerfrom.name).replace('[nameto]',value.playerto.name)
-        username = 'manoinocenteavila@gmail.com'
-        password = 'manoinocente'
-        server = smtplib.SMTP('smtp.gmail.com:587')
-        server.starttls()
-        server.ehlo()
-        server.login(username,password)
-        #Add the Subject
-        message ='Subject: {}\n\n{}'.format(subject, value.playerfrom.msg)
-        server.sendmail(username, value.playerfrom.mail , message)
-        server.quit()
+        value.playerfrom.msg = text.replace('[namefrom]', value.playerfrom.name).replace('[nameto]',
+                                                                                         value.playerto.name)
+        message = 'Subject: {}\n\n{}'.format(subject, value.playerfrom.msg)
+        server.sendmail(username, value.playerfrom.mail, message)
         print "The " + str(i) + " mail has been sent"
-        i = i+1
+        i = i + 1
+
+    server.quit()
     print "All mails have been sent"
+
+
+def create_server_connection():
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.starttls()
+    server.ehlo()
+    server.login(username, password)
+    return server
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
